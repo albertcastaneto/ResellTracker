@@ -1,0 +1,7 @@
+CREATE OR ALTER PROCEDURE [dbo].[usp_Users_UpdateLastLogin]
+    @Id UNIQUEIDENTIFIER
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE [Users] SET LastLogin = GETUTCDATE() WHERE Id = @Id;
+END

@@ -1,0 +1,7 @@
+CREATE OR ALTER PROCEDURE [dbo].[usp_SalesLog_Delete]
+    @Id UNIQUEIDENTIFIER
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DELETE FROM [SaleLogs] WHERE Id = @Id;
+END

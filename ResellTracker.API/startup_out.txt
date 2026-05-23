@@ -1,0 +1,837 @@
+Using launch settings from C:\Users\acastaneto\desktop\ResellTracker\ResellTracker.API\Properties\launchSettings.json...
+Building...
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+      Running 42 stored procedures...
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (38ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_AuditLog_GetAll]
+    @PageNumber INT = 1,
+    @PageSize   INT = 50
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT Id, UserId, UserEmail, Action, EntityName, EntityId, OldValues, NewValues, IpAddress, CreatedAt
+    FROM [AuditLogs]
+    ORDER BY CreatedAt DESC
+    OFFSET (@PageNumber - 1) * @PageSize ROWS
+    FETCH NEXT @PageSize ROWS ONLY;
+
+    SELECT COUNT(*) AS TotalCount FROM [AuditLogs];
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_AuditLog_GetAll
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_AuditLog_GetByDateRange]
+    @FromDate DATETIME2,
+    @ToDate   DATETIME2
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT Id, UserId, UserEmail, Action, EntityName, EntityId, OldValues, NewValues, IpAddress, CreatedAt
+    FROM [AuditLogs]
+    WHERE CreatedAt >= @FromDate AND CreatedAt <= @ToDate
+    ORDER BY CreatedAt DESC;
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_AuditLog_GetByDateRange
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_AuditLog_GetByEntity]
+    @EntityName NVARCHAR(100),
+    @EntityId   NVARCHAR(100)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT Id, UserId, UserEmail, Action, EntityName, EntityId, OldValues, NewValues, IpAddress, CreatedAt
+    FROM [AuditLogs]
+    WHERE EntityName = @EntityName AND EntityId = @EntityId
+    ORDER BY CreatedAt DESC;
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_AuditLog_GetByEntity
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_AuditLog_GetByUser]
+    @UserEmail NVARCHAR(255)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT Id, UserId, UserEmail, Action, EntityName, EntityId, OldValues, NewValues, IpAddress, CreatedAt
+    FROM [AuditLogs]
+    WHERE UserEmail = @UserEmail
+    ORDER BY CreatedAt DESC;
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_AuditLog_GetByUser
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_AuditLog_Insert]
+    @Id         UNIQUEIDENTIFIER,
+    @UserId     UNIQUEIDENTIFIER = NULL,
+    @UserEmail  NVARCHAR(255),
+    @Action     NVARCHAR(100),
+    @EntityName NVARCHAR(100),
+    @EntityId   NVARCHAR(100),
+    @OldValues  NVARCHAR(MAX) = NULL,
+    @NewValues  NVARCHAR(MAX) = NULL,
+    @IpAddress  NVARCHAR(45)  = NULL,
+    @CreatedAt  DATETIME2
+AS
+BEGIN
+    SET NOCOUNT ON;
+    INSERT INTO [AuditLogs] (Id, UserId, UserEmail, Action, EntityName, EntityId, OldValues, NewValues, IpAddress, CreatedAt)
+    VALUES (@Id, @UserId, @UserEmail, @Action, @EntityName, @EntityId, @OldValues, @NewValues, @IpAddress, @CreatedAt);
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_AuditLog_Insert
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_Inventory_Delete]
+    @Id UNIQUEIDENTIFIER
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DELETE FROM [InventoryItems] WHERE Id = @Id;
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_Inventory_Delete
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_Inventory_GetActive]
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT
+        i.Id, i.SKU, i.Brand, i.CategoryId, i.Size, i.Cogs,
+        i.SupplierId, i.PlatformId, i.DateListed, i.Status, i.CreatedAt,
+        c.Name  AS CategoryName,
+        s.Name  AS SupplierName,
+        p.Name  AS PlatformName
+    FROM  [InventoryItems] i
+    INNER JOIN [Categories] c ON i.CategoryId = c.Id
+    LEFT  JOIN [Suppliers]  s ON i.SupplierId  = s.Id
+    LEFT  JOIN [Platforms]  p ON i.PlatformId  = p.Id
+    WHERE i.Status = 'Active'
+    ORDER BY i.DateListed DESC;
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_Inventory_GetActive
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_Inventory_GetAll]
+    @Status     NVARCHAR(50)      = NULL,
+    @CategoryId UNIQUEIDENTIFIER  = NULL,
+    @SupplierId UNIQUEIDENTIFIER  = NULL,
+    @PlatformId UNIQUEIDENTIFIER  = NULL,
+    @Search     NVARCHAR(200)     = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT
+        i.Id, i.SKU, i.Brand, i.CategoryId, i.Size, i.Cogs,
+        i.SupplierId, i.PlatformId, i.DateListed, i.Status, i.CreatedAt,
+        c.Name  AS CategoryName,
+        s.Name  AS SupplierName,
+        p.Name  AS PlatformName
+    FROM  [InventoryItems] i
+    INNER JOIN [Categories] c ON i.CategoryId = c.Id
+    LEFT  JOIN [Suppliers]  s ON i.SupplierId  = s.Id
+    LEFT  JOIN [Platforms]  p ON i.PlatformId  = p.Id
+    WHERE (@Status     IS NULL OR i.Status     = @Status)
+      AND (@CategoryId IS NULL OR i.CategoryId = @CategoryId)
+      AND (@SupplierId IS NULL OR i.SupplierId = @SupplierId)
+      AND (@PlatformId IS NULL OR i.PlatformId = @PlatformId)
+      AND (@Search     IS NULL OR i.SKU   LIKE '%' + @Search + '%'
+                               OR i.Brand LIKE '%' + @Search + '%')
+    ORDER BY i.CreatedAt DESC;
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_Inventory_GetAll
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_Inventory_GetById]
+    @Id UNIQUEIDENTIFIER
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT
+        i.Id, i.SKU, i.Brand, i.CategoryId, i.Size, i.Cogs,
+        i.SupplierId, i.PlatformId, i.DateListed, i.Status, i.CreatedAt,
+        c.Name  AS CategoryName,
+        s.Name  AS SupplierName,
+        p.Name  AS PlatformName
+    FROM  [InventoryItems] i
+    INNER JOIN [Categories] c ON i.CategoryId = c.Id
+    LEFT  JOIN [Suppliers]  s ON i.SupplierId  = s.Id
+    LEFT  JOIN [Platforms]  p ON i.PlatformId  = p.Id
+    WHERE i.Id = @Id;
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_Inventory_GetById
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_Inventory_Insert]
+    @SKU        NVARCHAR(50),
+    @Brand      NVARCHAR(100),
+    @CategoryId UNIQUEIDENTIFIER,
+    @Size       NVARCHAR(20),
+    @Cogs       DECIMAL(10, 2),
+    @SupplierId UNIQUEIDENTIFIER = NULL,
+    @PlatformId UNIQUEIDENTIFIER = NULL,
+    @DateListed DATETIME2,
+    @Status     NVARCHAR(50),
+    @NewId      UNIQUEIDENTIFIER OUTPUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SET @NewId = NEWID();
+    INSERT INTO [InventoryItems] (Id, SKU, Brand, CategoryId, Size, Cogs, SupplierId, PlatformId, DateListed, Status, CreatedAt)
+    VALUES (@NewId, @SKU, @Brand, @CategoryId, @Size, @Cogs, @SupplierId, @PlatformId, @DateListed, @Status, GETUTCDATE());
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_Inventory_Insert
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_Inventory_Update]
+    @Id         UNIQUEIDENTIFIER,
+    @SKU        NVARCHAR(50),
+    @Brand      NVARCHAR(100),
+    @CategoryId UNIQUEIDENTIFIER,
+    @Size       NVARCHAR(20),
+    @Cogs       DECIMAL(10, 2),
+    @SupplierId UNIQUEIDENTIFIER = NULL,
+    @PlatformId UNIQUEIDENTIFIER = NULL,
+    @DateListed DATETIME2,
+    @Status     NVARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE [InventoryItems]
+    SET SKU        = @SKU,
+        Brand      = @Brand,
+        CategoryId = @CategoryId,
+        Size       = @Size,
+        Cogs       = @Cogs,
+        SupplierId = @SupplierId,
+        PlatformId = @PlatformId,
+        DateListed = @DateListed,
+        Status     = @Status
+    WHERE Id = @Id;
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_Inventory_Update
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_Inventory_UpdateStatus]
+    @Id     UNIQUEIDENTIFIER,
+    @Status NVARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE [InventoryItems] SET Status = @Status WHERE Id = @Id;
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_Inventory_UpdateStatus
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_Platforms_Delete]
+    @Id UNIQUEIDENTIFIER
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DELETE FROM [Platforms] WHERE Id = @Id;
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_Platforms_Delete
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_Platforms_GetAll]
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT Id, Name, FeePercentage, FixedFee, DefaultPostage, IsActive, CreatedAt
+    FROM [Platforms]
+    WHERE IsActive = 1
+    ORDER BY Name ASC;
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_Platforms_GetAll
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_Platforms_GetById]
+    @Id UNIQUEIDENTIFIER
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT Id, Name, FeePercentage, FixedFee, DefaultPostage, IsActive, CreatedAt
+    FROM [Platforms]
+    WHERE Id = @Id;
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_Platforms_GetById
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_Platforms_Insert]
+    @Name           NVARCHAR(100),
+    @FeePercentage  DECIMAL(5,  2),
+    @FixedFee       DECIMAL(10, 2),
+    @DefaultPostage DECIMAL(10, 2),
+    @IsActive       BIT,
+    @NewId          UNIQUEIDENTIFIER OUTPUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SET @NewId = NEWID();
+    INSERT INTO [Platforms] (Id, Name, FeePercentage, FixedFee, DefaultPostage, IsActive, CreatedAt)
+    VALUES (@NewId, @Name, @FeePercentage, @FixedFee, @DefaultPostage, @IsActive, GETUTCDATE());
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_Platforms_Insert
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_Platforms_Update]
+    @Id             UNIQUEIDENTIFIER,
+    @Name           NVARCHAR(100),
+    @FeePercentage  DECIMAL(5,  2),
+    @FixedFee       DECIMAL(10, 2),
+    @DefaultPostage DECIMAL(10, 2),
+    @IsActive       BIT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE [Platforms]
+    SET Name           = @Name,
+        FeePercentage  = @FeePercentage,
+        FixedFee       = @FixedFee,
+        DefaultPostage = @DefaultPostage,
+        IsActive       = @IsActive
+    WHERE Id = @Id;
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_Platforms_Update
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_Reports_AgingStock]
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT
+        i.SKU,
+        i.Brand,
+        c.Name AS CategoryName,
+        s.Name AS SupplierName,
+        i.DateListed,
+        DATEDIFF(DAY, i.DateListed, GETUTCDATE()) AS DaysListed,
+        CASE
+            WHEN DATEDIFF(DAY, i.DateListed, GETUTCDATE()) <  30 THEN 'Fresh'
+            WHEN DATEDIFF(DAY, i.DateListed, GETUTCDATE()) <  60 THEN 'Aging'
+            WHEN DATEDIFF(DAY, i.DateListed, GETUTCDATE()) <  90 THEN 'Stale'
+            ELSE 'DeadStock'
+        END AS AgeBand
+    FROM  [InventoryItems] i
+    INNER JOIN [Categories] c ON i.CategoryId = c.Id
+    LEFT  JOIN [Suppliers]  s ON i.SupplierId  = s.Id
+    WHERE i.Status = 'Active'
+    ORDER BY DaysListed DESC;
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_Reports_AgingStock
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_Reports_CategoryPerformance]
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT
+        c.Name                                                                                          AS CategoryName,
+        COUNT(DISTINCT i.Id)                                                                            AS TotalListed,
+        COUNT(DISTINCT sl.Id)                                                                           AS TotalSold,
+        CASE WHEN COUNT(DISTINCT i.Id) = 0 THEN 0.0
+             ELSE CAST(COUNT(DISTINCT sl.Id) AS DECIMAL(10,4)) / COUNT(DISTINCT i.Id) * 100
+        END                                                                                             AS SellThroughRate,
+        ISNULL(AVG(sl.SalePrice), 0)                                                                   AS AvgSalePrice,
+        ISNULL(AVG(i.Cogs),       0)                                                                   AS AvgCogs,
+        ISNULL(AVG(sl.NetProfit), 0)                                                                   AS AvgNetProfit,
+        ISNULL(SUM(sl.SalePrice), 0)                                                                   AS TotalRevenue,
+        ISNULL(SUM(sl.NetProfit), 0)                                                                   AS TotalProfit
+    FROM [Categories] c
+    LEFT JOIN [InventoryItems] i  ON c.Id  = i.CategoryId
+    LEFT JOIN [SaleLogs]       sl ON i.Id  = sl.InventoryId
+    GROUP BY c.Id, c.Name
+    ORDER BY TotalRevenue DESC;
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_Reports_CategoryPerformance
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_Reports_DashboardKPIs]
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT
+        (SELECT COUNT(*)            FROM [InventoryItems] WHERE Status = 'Active')                                     AS TotalActiveListings,
+        (SELECT ISNULL(SUM(Cogs),0) FROM [InventoryItems])                                                            AS TotalInventoryValue,
+        (SELECT ISNULL(SUM(Cogs),0) FROM [InventoryItems] WHERE Status = 'Active')                                    AS CashTiedInStock,
+        (SELECT ISNULL(SUM(SalePrice),0) FROM [SaleLogs]
+            WHERE YEAR(DateSold) = YEAR(GETUTCDATE()) AND MONTH(DateSold) = MONTH(GETUTCDATE()))                       AS CurrentMonthRevenue,
+        (SELECT ISNULL(SUM(NetProfit),0) FROM [SaleLogs]
+            WHERE YEAR(DateSold) = YEAR(GETUTCDATE()) AND MONTH(DateSold) = MONTH(GETUTCDATE()))                       AS CurrentMonthProfit,
+        (SELECT CASE WHEN COUNT(*) = 0 THEN 0.0
+                     ELSE CAST(SUM(CASE WHEN Status = 'Sold' THEN 1 ELSE 0 END) AS DECIMAL(10,4)) / COUNT(*) * 100
+                END FROM [InventoryItems])                                                                              AS OverallSellThroughRate,
+        (SELECT COUNT(*)          FROM [SaleLogs])                                                                    AS TotalItemsSold,
+        (SELECT ISNULL(AVG(NetProfit),0) FROM [SaleLogs])                                                            AS AvgNetProfit;
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_Reports_DashboardKPIs
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_Reports_MonthlyRevenue]
+    @Months INT = 12
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT
+        YEAR(DateSold)              AS Year,
+        MONTH(DateSold)             AS Month,
+        DATENAME(MONTH, DateSold)   AS MonthName,
+        SUM(SalePrice)              AS TotalRevenue,
+        SUM(NetProfit)              AS TotalProfit,
+        COUNT(*)                    AS TotalItemsSold
+    FROM [SaleLogs]
+    WHERE DateSold >= DATEADD(MONTH, -@Months, GETUTCDATE())
+    GROUP BY YEAR(DateSold), MONTH(DateSold), DATENAME(MONTH, DateSold)
+    ORDER BY Year DESC, Month DESC;
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_Reports_MonthlyRevenue
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_Reports_SellThrough]
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT
+        c.Name                                                                                        AS CategoryName,
+        COUNT(DISTINCT i.Id)                                                                          AS TotalListed,
+        COUNT(DISTINCT sl.Id)                                                                         AS TotalSold,
+        CASE WHEN COUNT(DISTINCT i.Id) = 0 THEN 0.0
+             ELSE CAST(COUNT(DISTINCT sl.Id) AS DECIMAL(10,4)) / COUNT(DISTINCT i.Id) * 100
+        END                                                                                           AS SellThroughRate,
+        ISNULL(AVG(CAST(sl.DaysToSell AS DECIMAL(10,2))), 0)                                        AS AvgDaysToSell
+    FROM [Categories] c
+    LEFT JOIN [InventoryItems] i  ON c.Id = i.CategoryId
+    LEFT JOIN [SaleLogs]       sl ON i.Id = sl.InventoryId
+    GROUP BY c.Id, c.Name
+    ORDER BY SellThroughRate DESC;
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_Reports_SellThrough
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_Reports_SupplierROI]
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT
+        s.Name                                                                                    AS SupplierName,
+        COUNT(DISTINCT i.Id)                                                                      AS TotalItemsBought,
+        ISNULL(SUM(i.Cogs),        0)                                                            AS TotalSpent,
+        COUNT(DISTINCT sl.Id)                                                                     AS TotalItemsSold,
+        ISNULL(SUM(sl.SalePrice),  0)                                                            AS TotalRevenue,
+        ISNULL(SUM(sl.NetProfit),  0)                                                            AS TotalProfit,
+        CASE WHEN ISNULL(SUM(i.Cogs), 0) = 0 THEN 0.0
+             ELSE ISNULL(SUM(sl.NetProfit), 0) / SUM(i.Cogs) * 100
+        END                                                                                       AS RoiPercentage
+    FROM [Suppliers] s
+    LEFT JOIN [InventoryItems] i  ON s.Id = i.SupplierId
+    LEFT JOIN [SaleLogs]       sl ON i.Id = sl.InventoryId
+    GROUP BY s.Id, s.Name
+    ORDER BY RoiPercentage DESC;
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_Reports_SupplierROI
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_SalesLog_Delete]
+    @Id UNIQUEIDENTIFIER
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DELETE FROM [SaleLogs] WHERE Id = @Id;
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_SalesLog_Delete
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_SalesLog_GetAll]
+    @PlatformId UNIQUEIDENTIFIER = NULL,
+    @CategoryId UNIQUEIDENTIFIER = NULL,
+    @FromDate   DATETIME2        = NULL,
+    @ToDate     DATETIME2        = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT
+        sl.Id, sl.InventoryId, sl.SKU, sl.SalePrice, sl.PlatformId,
+        sl.FeePercentage, sl.FixedFee, sl.Postage, sl.NetProfit,
+        sl.DaysToSell, sl.DateSold, sl.CreatedAt,
+        p.Name  AS PlatformName,
+        i.Brand AS Brand,
+        c.Name  AS CategoryName
+    FROM  [SaleLogs]      sl
+    INNER JOIN [Platforms]     p  ON sl.PlatformId  = p.Id
+    INNER JOIN [InventoryItems] i ON sl.InventoryId = i.Id
+    INNER JOIN [Categories]    c  ON i.CategoryId   = c.Id
+    WHERE (@PlatformId IS NULL OR sl.PlatformId = @PlatformId)
+      AND (@CategoryId IS NULL OR i.CategoryId  = @CategoryId)
+      AND (@FromDate   IS NULL OR sl.DateSold   >= @FromDate)
+      AND (@ToDate     IS NULL OR sl.DateSold   <= @ToDate)
+    ORDER BY sl.DateSold DESC;
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_SalesLog_GetAll
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_SalesLog_GetById]
+    @Id UNIQUEIDENTIFIER
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT
+        sl.Id, sl.InventoryId, sl.SKU, sl.SalePrice, sl.PlatformId,
+        sl.FeePercentage, sl.FixedFee, sl.Postage, sl.NetProfit,
+        sl.DaysToSell, sl.DateSold, sl.CreatedAt,
+        p.Name  AS PlatformName,
+        i.Brand AS Brand,
+        c.Name  AS CategoryName
+    FROM  [SaleLogs]      sl
+    INNER JOIN [Platforms]      p ON sl.PlatformId  = p.Id
+    INNER JOIN [InventoryItems] i ON sl.InventoryId = i.Id
+    INNER JOIN [Categories]     c ON i.CategoryId   = c.Id
+    WHERE sl.Id = @Id;
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_SalesLog_GetById
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_SalesLog_Insert]
+    @InventoryId UNIQUEIDENTIFIER,
+    @SalePrice   DECIMAL(10, 2),
+    @PlatformId  UNIQUEIDENTIFIER,
+    @Postage     DECIMAL(10, 2),
+    @DateSold    DATETIME2,
+    @NewId       UNIQUEIDENTIFIER OUTPUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @FeePercentage DECIMAL(5,  2);
+    DECLARE @FixedFee      DECIMAL(10, 2);
+    DECLARE @Cogs          DECIMAL(10, 2);
+    DECLARE @DateListed    DATETIME2;
+    DECLARE @SKU           NVARCHAR(50);
+    DECLARE @NetProfit     DECIMAL(10, 2);
+    DECLARE @DaysToSell    INT;
+
+    SELECT @FeePercentage = FeePercentage, @FixedFee = FixedFee
+    FROM [Platforms] WHERE Id = @PlatformId;
+
+    SELECT @Cogs = Cogs, @DateListed = DateListed, @SKU = SKU
+    FROM [InventoryItems] WHERE Id = @InventoryId;
+
+    SET @NetProfit  = @SalePrice - @Cogs - (@SalePrice * @FeePercentage / 100.0) - @FixedFee - @Postage;
+    SET @DaysToSell = DATEDIFF(DAY, CAST(@DateListed AS DATE), CAST(@DateSold AS DATE));
+    SET @NewId      = NEWID();
+
+    BEGIN TRANSACTION;
+    BEGIN TRY
+        INSERT INTO [SaleLogs] (Id, InventoryId, SKU, SalePrice, PlatformId, FeePercentage, FixedFee, Postage, NetProfit, DaysToSell, DateSold, CreatedAt)
+        VALUES (@NewId, @InventoryId, @SKU, @SalePrice, @PlatformId, @FeePercentage, @FixedFee, @Postage, @NetProfit, @DaysToSell, @DateSold, GETUTCDATE());
+
+        UPDATE [InventoryItems] SET Status = 'Sold' WHERE Id = @InventoryId;
+
+        COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH;
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_SalesLog_Insert
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_SalesLog_Update]
+    @Id         UNIQUEIDENTIFIER,
+    @SalePrice  DECIMAL(10, 2),
+    @PlatformId UNIQUEIDENTIFIER,
+    @Postage    DECIMAL(10, 2),
+    @DateSold   DATETIME2
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @FeePercentage DECIMAL(5,  2);
+    DECLARE @FixedFee      DECIMAL(10, 2);
+    DECLARE @Cogs          DECIMAL(10, 2);
+    DECLARE @InventoryId   UNIQUEIDENTIFIER;
+    DECLARE @DateListed    DATETIME2;
+    DECLARE @NetProfit     DECIMAL(10, 2);
+    DECLARE @DaysToSell    INT;
+
+    SELECT @FeePercentage = FeePercentage, @FixedFee = FixedFee
+    FROM [Platforms] WHERE Id = @PlatformId;
+
+    SELECT @InventoryId = InventoryId FROM [SaleLogs] WHERE Id = @Id;
+
+    SELECT @Cogs = Cogs, @DateListed = DateListed
+    FROM [InventoryItems] WHERE Id = @InventoryId;
+
+    SET @NetProfit  = @SalePrice - @Cogs - (@SalePrice * @FeePercentage / 100.0) - @FixedFee - @Postage;
+    SET @DaysToSell = DATEDIFF(DAY, CAST(@DateListed AS DATE), CAST(@DateSold AS DATE));
+
+    UPDATE [SaleLogs]
+    SET SalePrice     = @SalePrice,
+        PlatformId    = @PlatformId,
+        FeePercentage = @FeePercentage,
+        FixedFee      = @FixedFee,
+        Postage       = @Postage,
+        NetProfit     = @NetProfit,
+        DaysToSell    = @DaysToSell,
+        DateSold      = @DateSold
+    WHERE Id = @Id;
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_SalesLog_Update
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_Sku_GetNextSequence]
+    @BrandCode    NVARCHAR(10),
+    @CategoryCode NVARCHAR(10),
+    @SupplierCode NVARCHAR(10)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT ISNULL(MAX(SequenceNumber), 0) + 1 AS NextSequence
+    FROM [SkuRegistry]
+    WHERE BrandCode    = @BrandCode
+      AND CategoryCode = @CategoryCode
+      AND SupplierCode = @SupplierCode;
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_Sku_GetNextSequence
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_Sku_GetRecent]
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT TOP 20 Id, SKU, BrandCode, CategoryCode, SizeCode, SupplierCode, SequenceNumber, InventoryId, CreatedAt
+    FROM [SkuRegistry]
+    ORDER BY CreatedAt DESC;
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_Sku_GetRecent
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_Sku_Insert]
+    @SKU            NVARCHAR(50),
+    @BrandCode      NVARCHAR(10),
+    @CategoryCode   NVARCHAR(10),
+    @SizeCode       NVARCHAR(10),
+    @SupplierCode   NVARCHAR(10),
+    @SequenceNumber INT,
+    @InventoryId    UNIQUEIDENTIFIER = NULL,
+    @NewId          UNIQUEIDENTIFIER OUTPUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SET @NewId = NEWID();
+    INSERT INTO [SkuRegistry] (Id, SKU, BrandCode, CategoryCode, SizeCode, SupplierCode, SequenceNumber, InventoryId, CreatedAt)
+    VALUES (@NewId, @SKU, @BrandCode, @CategoryCode, @SizeCode, @SupplierCode, @SequenceNumber, @InventoryId, GETUTCDATE());
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_Sku_Insert
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_Suppliers_Delete]
+    @Id UNIQUEIDENTIFIER
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DELETE FROM [Suppliers] WHERE Id = @Id;
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_Suppliers_Delete
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_Suppliers_GetAll]
+    @IsActive BIT = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT Id, Name, Type, Location, Notes, IsActive, CreatedAt
+    FROM [Suppliers]
+    WHERE @IsActive IS NULL OR IsActive = @IsActive
+    ORDER BY Name ASC;
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_Suppliers_GetAll
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_Suppliers_GetById]
+    @Id UNIQUEIDENTIFIER
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT Id, Name, Type, Location, Notes, IsActive, CreatedAt
+    FROM [Suppliers]
+    WHERE Id = @Id;
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_Suppliers_GetById
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_Suppliers_Insert]
+    @Name     NVARCHAR(150),
+    @Type     NVARCHAR(50),
+    @Location NVARCHAR(200) = NULL,
+    @Notes    NVARCHAR(1000) = NULL,
+    @IsActive BIT,
+    @NewId    UNIQUEIDENTIFIER OUTPUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SET @NewId = NEWID();
+    INSERT INTO [Suppliers] (Id, Name, Type, Location, Notes, IsActive, CreatedAt)
+    VALUES (@NewId, @Name, @Type, @Location, @Notes, @IsActive, GETUTCDATE());
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_Suppliers_Insert
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_Suppliers_Update]
+    @Id       UNIQUEIDENTIFIER,
+    @Name     NVARCHAR(150),
+    @Type     NVARCHAR(50),
+    @Location NVARCHAR(200)  = NULL,
+    @Notes    NVARCHAR(1000) = NULL,
+    @IsActive BIT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE [Suppliers]
+    SET Name     = @Name,
+        Type     = @Type,
+        Location = @Location,
+        Notes    = @Notes,
+        IsActive = @IsActive
+    WHERE Id = @Id;
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_Suppliers_Update
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_Users_GetAll]
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT Id, Email, DisplayName, Role, Status, LastLogin, CreatedAt
+    FROM [Users]
+    ORDER BY DisplayName ASC;
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_Users_GetAll
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_Users_GetByEmail]
+    @Email NVARCHAR(255)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT Id, Email, DisplayName, Role, Status, LastLogin, CreatedAt
+    FROM [Users]
+    WHERE Email = @Email;
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_Users_GetByEmail
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_Users_Insert]
+    @Email       NVARCHAR(255),
+    @DisplayName NVARCHAR(100),
+    @Role        NVARCHAR(50),
+    @Status      NVARCHAR(50),
+    @NewId       UNIQUEIDENTIFIER OUTPUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SET @NewId = NEWID();
+    INSERT INTO [Users] (Id, Email, DisplayName, Role, Status, CreatedAt)
+    VALUES (@NewId, @Email, @DisplayName, @Role, @Status, GETUTCDATE());
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_Users_Insert
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_Users_UpdateLastLogin]
+    @Id UNIQUEIDENTIFIER
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE [Users] SET LastLogin = GETUTCDATE() WHERE Id = @Id;
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_Users_UpdateLastLogin
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_Users_UpdateRole]
+    @Id   UNIQUEIDENTIFIER,
+    @Role NVARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE [Users] SET Role = @Role WHERE Id = @Id;
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_Users_UpdateRole
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE OR ALTER PROCEDURE [dbo].[usp_Users_UpdateStatus]
+    @Id     UNIQUEIDENTIFIER,
+    @Status NVARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE [Users] SET Status = @Status WHERE Id = @Id;
+END
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+        ✓ usp_Users_UpdateStatus
+info: ResellTracker.Infrastructure.StoredProcedureRunner[0]
+      Stored procedures ready.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (22ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT CASE
+          WHEN EXISTS (
+              SELECT 1
+              FROM [Users] AS [u]) THEN CAST(1 AS bit)
+          ELSE CAST(0 AS bit)
+      END
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (15ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = DateTime2), @p2='?' (Size = 100), @p3='?' (Size = 255), @p4='?' (DbType = DateTime2), @p5='?' (Size = 50), @p6='?' (Size = 50)], CommandType='Text', CommandTimeout='30']
+      SET IMPLICIT_TRANSACTIONS OFF;
+      SET NOCOUNT ON;
+      INSERT INTO [Users] ([Id], [CreatedAt], [DisplayName], [Email], [LastLogin], [Role], [Status])
+      VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6);
+info: ResellTracker.API[0]
+      Seeded default Owner user.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://localhost:5145
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: C:\Users\acastaneto\desktop\ResellTracker\ResellTracker.API

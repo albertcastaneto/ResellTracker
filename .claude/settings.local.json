@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(dotnet new sln *)",
+      "PowerShell(npm install *)",
+      "PowerShell(Get-Process *)",
+      "PowerShell(dotnet build *)",
+      "PowerShell(New-Item *)",
+      "Bash(dotnet add *)",
+      "Bash(dotnet build *)"
+    ]
+  }
+}

@@ -1,0 +1,7 @@
+CREATE OR ALTER PROCEDURE [dbo].[usp_Inventory_Delete]
+    @Id UNIQUEIDENTIFIER
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DELETE FROM [InventoryItems] WHERE Id = @Id;
+END

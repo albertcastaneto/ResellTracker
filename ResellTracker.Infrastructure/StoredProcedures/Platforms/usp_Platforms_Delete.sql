@@ -1,0 +1,7 @@
+CREATE OR ALTER PROCEDURE [dbo].[usp_Platforms_Delete]
+    @Id UNIQUEIDENTIFIER
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DELETE FROM [Platforms] WHERE Id = @Id;
+END

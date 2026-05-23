@@ -1,0 +1,7 @@
+CREATE OR ALTER PROCEDURE [dbo].[usp_Suppliers_Delete]
+    @Id UNIQUEIDENTIFIER
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DELETE FROM [Suppliers] WHERE Id = @Id;
+END
