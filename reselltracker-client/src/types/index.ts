@@ -58,7 +58,11 @@ export interface SaleLog {
   id: string
   inventoryId: string
   sku: string
+  brand: string
+  categoryId: string
+  categoryName: string
   salePrice: number
+  cogs: number
   feePercentage: number
   fixedFee: number
   postage: number
@@ -143,6 +147,35 @@ export interface InventoryFilters {
   supplierId?: string
   platformId?: string
   search?: string
+}
+
+export interface SaleLogRequest {
+  inventoryId: string
+  salePrice: number
+  platformId: string
+  postage: number
+  dateSold: string
+}
+
+export interface SaleLogUpdateRequest {
+  salePrice: number
+  postage: number
+  dateSold: string
+}
+
+export interface SaleLogFilters {
+  platformId?: string
+  categoryId?: string
+  fromDate?: string
+  toDate?: string
+}
+
+export interface SaleLogPreview {
+  cogs: number
+  feePercentage: number
+  fixedFee: number
+  estimatedNetProfit: number
+  daysListedSoFar: number
 }
 
 // ─── Response DTOs ────────────────────────────────────────────────────────────
