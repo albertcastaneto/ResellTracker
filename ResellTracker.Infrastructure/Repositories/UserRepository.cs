@@ -75,6 +75,15 @@ public class UserRepository : RepositoryBase, IUserRepository
         await cmd.ExecuteNonQueryAsync();
     }
 
+    public async Task DeleteAsync(Guid id)
+    {
+        await using var conn = CreateConnection();
+        await conn.OpenAsync();
+        await using var cmd = new SqlCommand("usp_Users_Delete", conn) { CommandType = CommandType.StoredProcedure };
+        cmd.Parameters.AddWithValue("@Id", id);
+        await cmd.ExecuteNonQueryAsync();
+    }
+
     private static User MapUser(SqlDataReader r) => new()
     {
         Id          = r.GetGuid(r.GetOrdinal("Id")),

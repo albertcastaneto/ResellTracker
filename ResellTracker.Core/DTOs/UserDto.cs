@@ -8,6 +8,17 @@ public class UserRequestDto
     public string Status { get; set; } = string.Empty;
 }
 
+public class UpdateRoleRequestDto
+{
+    public string Role { get; set; } = string.Empty;
+    public string? Email { get; set; }
+}
+
+public class UpdateStatusRequestDto
+{
+    public string Status { get; set; } = string.Empty;
+}
+
 public class UserResponseDto
 {
     public Guid Id { get; set; }

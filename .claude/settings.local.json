@@ -7,7 +7,10 @@
       "PowerShell(dotnet build *)",
       "PowerShell(New-Item *)",
       "Bash(dotnet add *)",
-      "Bash(dotnet build *)"
+      "Bash(dotnet build *)",
+      "Bash(Get-ChildItem \"C:\\\\Users\\\\acastaneto\\\\desktop\\\\ResellTracker\\\\ResellTracker.Core\\\\Interfaces\\\\Repositories\")",
+      "Bash(Select-Object Name)",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\acastaneto\\\\desktop\\\\ResellTracker\\\\reselltracker-client\\\\src\" -Recurse | Where-Object { -not $_.PSIsContainer } | Select-Object FullName)"
     ]
   }
 }

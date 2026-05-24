@@ -10,4 +10,5 @@ public interface IUserRepository
     Task UpdateRoleAsync(Guid id, string role);
     Task UpdateStatusAsync(Guid id, string status);
     Task UpdateLastLoginAsync(Guid id);
+    Task DeleteAsync(Guid id);
 }
