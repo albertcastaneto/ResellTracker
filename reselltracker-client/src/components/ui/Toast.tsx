@@ -16,18 +16,25 @@ interface ToastContextType {
 
 const ToastContext = createContext<ToastContextType | null>(null)
 
-const icons: Record<ToastType, string> = {
-  success: '✓',
-  error:   '✕',
-  warning: '⚠',
-  info:    'ℹ',
+const leftBorder: Record<ToastType, string> = {
+  success: 'border-l-emerald-500',
+  error:   'border-l-red-500',
+  warning: 'border-l-amber-500',
+  info:    'border-l-blue-500',
 }
 
-const colors: Record<ToastType, string> = {
-  success: 'bg-green-50 border-green-200 text-green-800',
-  error:   'bg-red-50 border-red-200 text-red-800',
-  warning: 'bg-yellow-50 border-yellow-200 text-yellow-800',
-  info:    'bg-blue-50 border-blue-200 text-blue-800',
+const textColor: Record<ToastType, string> = {
+  success: 'text-emerald-600',
+  error:   'text-red-600',
+  warning: 'text-amber-600',
+  info:    'text-blue-600',
+}
+
+const labels: Record<ToastType, string> = {
+  success: 'Success',
+  error:   'Error',
+  warning: 'Warning',
+  info:    'Info',
 }
 
 export function ToastProvider({ children }: { children: ReactNode }) {
@@ -45,16 +52,23 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   return (
     <ToastContext.Provider value={{ toasts, show, dismiss }}>
       {children}
-      <div className="fixed top-4 right-4 z-[100] flex flex-col gap-2 pointer-events-none">
+      <div className="fixed bottom-4 right-4 z-[100] flex flex-col gap-2 pointer-events-none">
         {toasts.map(t => (
           <div
             key={t.id}
-            className={`flex items-start gap-3 px-4 py-3 rounded-lg border shadow-lg pointer-events-auto
-              min-w-[280px] max-w-sm animate-slide-in ${colors[t.type]}`}
+            className={`flex items-start gap-3 bg-white border border-gray-200 border-l-4 ${leftBorder[t.type]}
+              rounded-lg shadow-lg px-4 py-3 pointer-events-auto min-w-[280px] max-w-sm animate-slide-in`}
           >
-            <span className="font-bold mt-0.5">{icons[t.type]}</span>
-            <p className="text-sm flex-1">{t.message}</p>
-            <button onClick={() => dismiss(t.id)} className="opacity-60 hover:opacity-100 text-xs mt-0.5">✕</button>
+            <div className="flex-1 min-w-0">
+              <p className={`text-xs font-semibold ${textColor[t.type]}`}>{labels[t.type]}</p>
+              <p className="text-sm text-gray-700 mt-0.5">{t.message}</p>
+            </div>
+            <button
+              onClick={() => dismiss(t.id)}
+              className="text-gray-400 hover:text-gray-600 text-sm shrink-0 mt-0.5"
+            >
+              ✕
+            </button>
           </div>
         ))}
       </div>

@@ -1,10 +1,11 @@
 import { useState } from 'react'
+import type { ReactNode } from 'react'
 
 export interface Column<T> {
   key: string
   header: string
   sortable?: boolean
-  render?: (row: T) => React.ReactNode
+  render?: (row: T) => ReactNode
 }
 
 interface Props<T> {
@@ -16,8 +17,8 @@ interface Props<T> {
 }
 
 export function Table<T>({ columns, data, isLoading, rowKey, emptyMessage = 'No data found.' }: Props<T>) {
-  const [sortKey, setSortKey]   = useState<string | null>(null)
-  const [sortAsc, setSortAsc]   = useState(true)
+  const [sortKey, setSortKey] = useState<string | null>(null)
+  const [sortAsc, setSortAsc] = useState(true)
 
   const handleSort = (key: string) => {
     if (sortKey === key) setSortAsc(a => !a)
@@ -29,43 +30,39 @@ export function Table<T>({ columns, data, isLoading, rowKey, emptyMessage = 'No 
     const av = (a as Record<string, unknown>)[sortKey]
     const bv = (b as Record<string, unknown>)[sortKey]
     if (av === bv) return 0
-    const cmp = av! < bv! ? -1 : 1
+    const cmp = String(av) < String(bv) ? -1 : 1
     return sortAsc ? cmp : -cmp
   })
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-gray-200">
-      <table className="min-w-full divide-y divide-gray-200 text-sm">
-        <thead className="bg-gray-50">
-          <tr>
+    <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white">
+      <table className="min-w-full text-sm">
+        <thead>
+          <tr className="bg-gray-50 border-b border-gray-200">
             {columns.map(col => (
               <th
                 key={col.key}
-                className={`px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider
-                  ${col.sortable ? 'cursor-pointer select-none hover:text-gray-700' : ''}`}
                 onClick={() => col.sortable && handleSort(col.key)}
+                className={`px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider select-none
+                  ${col.sortable ? 'cursor-pointer hover:text-gray-700' : ''}`}
               >
                 <span className="inline-flex items-center gap-1">
                   {col.header}
                   {col.sortable && sortKey === col.key && (
-                    <svg className="h-3 w-3" viewBox="0 0 12 12" fill="currentColor">
-                      {sortAsc
-                        ? <path d="M6 2l4 6H2l4-6z" />
-                        : <path d="M6 10L2 4h8L6 10z" />}
-                    </svg>
+                    <span className="text-gray-400">{sortAsc ? '↑' : '↓'}</span>
                   )}
                 </span>
               </th>
             ))}
           </tr>
         </thead>
-        <tbody className="bg-white divide-y divide-gray-100">
+        <tbody className="divide-y divide-gray-100">
           {isLoading
             ? Array.from({ length: 5 }).map((_, i) => (
-              <tr key={i} className={i % 2 === 1 ? 'bg-gray-50' : ''}>
+              <tr key={i} className="hover:bg-gray-50">
                 {columns.map(col => (
                   <td key={col.key} className="px-4 py-3">
-                    <div className="h-4 bg-gray-200 rounded animate-pulse w-3/4" />
+                    <div className="h-4 bg-gray-100 rounded animate-pulse w-3/4" />
                   </td>
                 ))}
               </tr>
@@ -73,13 +70,13 @@ export function Table<T>({ columns, data, isLoading, rowKey, emptyMessage = 'No 
             : sorted.length === 0
               ? (
                 <tr>
-                  <td colSpan={columns.length} className="px-4 py-10 text-center text-gray-400">
+                  <td colSpan={columns.length} className="px-4 py-12 text-center text-sm text-gray-400">
                     {emptyMessage}
                   </td>
                 </tr>
               )
-              : sorted.map((row, i) => (
-                <tr key={rowKey(row)} className={i % 2 === 1 ? 'bg-gray-50' : ''}>
+              : sorted.map(row => (
+                <tr key={rowKey(row)} className="hover:bg-gray-50 transition-colors">
                   {columns.map(col => (
                     <td key={col.key} className="px-4 py-3 text-gray-700">
                       {col.render

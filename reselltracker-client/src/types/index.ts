@@ -40,16 +40,17 @@ export interface InventoryItem {
   id: string
   sku: string
   brand: string
-  size: string
-  cogs: number
-  dateListed: string
-  status: string
   categoryId: string
   categoryName: string
+  size: string
+  cogs: number
   supplierId: string | null
   supplierName: string | null
   platformId: string | null
   platformName: string | null
+  dateListed: string
+  status: string
+  daysListed: number
   createdAt: string
 }
 
@@ -66,6 +67,18 @@ export interface SaleLog {
   dateSold: string
   platformId: string
   platformName: string
+  createdAt: string
+}
+
+export interface SkuRegistry {
+  id: string
+  sku: string
+  brandCode: string
+  categoryCode: string
+  sizeCode: string
+  supplierCode: string
+  sequenceNumber: number
+  inventoryId: string | null
   createdAt: string
 }
 
@@ -105,6 +118,33 @@ export interface DevLoginRequest {
   email: string
 }
 
+export interface SkuGenerateRequest {
+  brand: string
+  categoryId: string
+  size: string
+  supplierId: string
+}
+
+export interface InventoryRequest {
+  sku: string
+  brand: string
+  categoryId: string
+  size: string
+  cogs: number
+  supplierId: string | null
+  platformId: string | null
+  dateListed: string
+  status: string
+}
+
+export interface InventoryFilters {
+  status?: string
+  categoryId?: string
+  supplierId?: string
+  platformId?: string
+  search?: string
+}
+
 // ─── Response DTOs ────────────────────────────────────────────────────────────
 
 export interface MeResponse {
@@ -112,6 +152,16 @@ export interface MeResponse {
   email: string
   displayName: string
   role: string
+}
+
+export interface SkuGenerateResponse {
+  sku: string
+  brandCode: string
+  categoryCode: string
+  sizeCode: string
+  supplierCode: string
+  sequenceNumber: number
+  createdAt: string
 }
 
 // ─── Utility ──────────────────────────────────────────────────────────────────
