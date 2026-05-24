@@ -283,8 +283,8 @@ export default function Inventory() {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-4 mb-6">
         <StatCard icon={Package}     label="Active Items"        value={activeItems.length.toString()} />
-        <StatCard icon={DollarSign}  label="Inventory Value"     value={`£${totalCogs.toFixed(2)}`} />
-        <StatCard icon={Wallet}      label="Cash Tied in Stock"  value={`£${totalCogs.toFixed(2)}`} />
+        <StatCard icon={DollarSign}  label="Inventory Value"     value={`$${totalCogs.toFixed(2)}`} />
+        <StatCard icon={Wallet}      label="Cash Tied in Stock"  value={`$${totalCogs.toFixed(2)}`} />
       </div>
 
       {/* Filter bar */}
@@ -349,7 +349,7 @@ export default function Inventory() {
                     <td className="px-4 py-3 text-gray-700">{item.brand}</td>
                     <td className="px-4 py-3 text-gray-700">{item.categoryName}</td>
                     <td className="px-4 py-3 text-gray-700">{item.size}</td>
-                    <td className="px-4 py-3 text-gray-700">£{item.cogs.toFixed(2)}</td>
+                    <td className="px-4 py-3 text-gray-700">${item.cogs.toFixed(2)}</td>
                     <td className="px-4 py-3 text-gray-700">{item.supplierName ?? '—'}</td>
                     <td className="px-4 py-3 text-gray-700">{item.platformName ?? '—'}</td>
                     <td className="px-4 py-3 text-gray-500 whitespace-nowrap">
@@ -380,7 +380,7 @@ export default function Inventory() {
           {loading ? '' : (
             <>
               Showing {items.length === 0 ? 0 : (page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, items.length)} of {items.length} items
-              {' · '}Total cost: <span className="font-medium text-gray-700">£{items.reduce((s, i) => s + i.cogs, 0).toFixed(2)}</span>
+              {' · '}Total cost: <span className="font-medium text-gray-700">${items.reduce((s, i) => s + i.cogs, 0).toFixed(2)}</span>
             </>
           )}
         </p>
@@ -429,7 +429,7 @@ export default function Inventory() {
             onChange={e => setForm(f => ({ ...f, categoryId: e.target.value }))}
           />
           <Input
-            label="Cost Price (£)" type="number" min={0} step={0.01} required
+            label="Cost Price ($)" type="number" min={0} step={0.01} required
             value={form.cogs}
             onChange={e => setForm(f => ({ ...f, cogs: e.target.value }))}
             placeholder="0.00"

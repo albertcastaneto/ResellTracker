@@ -23,7 +23,7 @@ function todayStr() {
 }
 
 function fmt(n: number) {
-  return `£${n.toFixed(2)}`
+  return `$${n.toFixed(2)}`
 }
 
 function profitClass(n: number) {
@@ -594,7 +594,7 @@ export default function SalesLog() {
 
             <div className="grid grid-cols-2 gap-3">
               <Input
-                label="Sale Price (£)"
+                label="Sale Price ($)"
                 type="number"
                 step="0.01"
                 min="0"
@@ -603,7 +603,7 @@ export default function SalesLog() {
                 required
               />
               <Input
-                label="Postage (£)"
+                label="Postage ($)"
                 type="number"
                 step="0.01"
                 min="0"
@@ -653,7 +653,7 @@ export default function SalesLog() {
 
             <div className="grid grid-cols-2 gap-3">
               <Input
-                label="Sale Price (£)"
+                label="Sale Price ($)"
                 type="number"
                 step="0.01"
                 min="0"
@@ -662,7 +662,7 @@ export default function SalesLog() {
                 required
               />
               <Input
-                label="Postage (£)"
+                label="Postage ($)"
                 type="number"
                 step="0.01"
                 min="0"

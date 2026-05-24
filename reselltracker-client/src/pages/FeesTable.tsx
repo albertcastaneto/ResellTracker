@@ -83,8 +83,8 @@ export default function FeesTable() {
   const columns: Column<Platform>[] = [
     { key: 'name',           header: 'Platform Name',     sortable: true },
     { key: 'feePercentage',  header: 'Fee %',             sortable: true, render: r => `${r.feePercentage}%` },
-    { key: 'fixedFee',       header: 'Fixed Fee (£)',     sortable: true, render: r => `£${r.fixedFee.toFixed(2)}` },
-    { key: 'defaultPostage', header: 'Default Postage (£)', sortable: true, render: r => `£${r.defaultPostage.toFixed(2)}` },
+    { key: 'fixedFee',       header: 'Fixed Fee ($)',     sortable: true, render: r => `$${r.fixedFee.toFixed(2)}` },
+    { key: 'defaultPostage', header: 'Default Postage ($)', sortable: true, render: r => `$${r.defaultPostage.toFixed(2)}` },
     { key: 'isActive',       header: 'Active',            render: r => <Badge variant={r.isActive ? 'success' : 'neutral'} label={r.isActive ? 'Active' : 'Inactive'} /> },
     {
       key: 'actions', header: 'Actions',
@@ -130,12 +130,12 @@ export default function FeesTable() {
               onChange={e => setForm(f => ({ ...f, feePercentage: parseFloat(e.target.value) || 0 }))}
             />
             <Input
-              label="Fixed Fee (£)" type="number" min={0} step={0.01}
+              label="Fixed Fee ($)" type="number" min={0} step={0.01}
               value={form.fixedFee}
               onChange={e => setForm(f => ({ ...f, fixedFee: parseFloat(e.target.value) || 0 }))}
             />
             <Input
-              label="Default Postage (£)" type="number" min={0} step={0.01}
+              label="Default Postage ($)" type="number" min={0} step={0.01}
               value={form.defaultPostage}
               onChange={e => setForm(f => ({ ...f, defaultPostage: parseFloat(e.target.value) || 0 }))}
             />
