@@ -43,7 +43,7 @@ interface StatCardProps { icon: React.ReactNode; label: string; value: string }
 function StatCard({ icon, label, value }: StatCardProps) {
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm flex items-center gap-4">
-      <div className="p-2.5 bg-indigo-50 rounded-lg text-indigo-600">{icon}</div>
+      <div className="p-2.5 bg-green-50 rounded-lg text-green-800">{icon}</div>
       <div>
         <p className="text-xs text-gray-500 font-medium">{label}</p>
         <p className="text-xl font-semibold text-gray-900 mt-0.5">{value}</p>
@@ -388,7 +388,7 @@ export default function SalesLog() {
       <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
         {loading ? (
           <div className="p-12 text-center">
-            <div className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-indigo-600 border-t-transparent" />
+            <div className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-green-800 border-t-transparent" />
           </div>
         ) : filtered.length === 0 ? (
           <div className="p-12 text-center">
@@ -435,7 +435,7 @@ export default function SalesLog() {
                           <div className="flex gap-1">
                             <button
                               onClick={() => openEdit(s)}
-                              className="p-1.5 text-gray-400 hover:text-indigo-600 rounded transition-colors"
+                              className="p-1.5 text-gray-400 hover:text-green-800 rounded transition-colors"
                               title="Edit"
                             >
                               <Pencil className="h-3.5 w-3.5" />
@@ -493,7 +493,7 @@ export default function SalesLog() {
                       <button
                         key={n}
                         onClick={() => setPage(n)}
-                        className={`w-7 h-7 rounded text-xs ${n === page ? 'bg-indigo-600 text-white' : 'text-gray-600 hover:bg-gray-100'}`}
+                        className={`w-7 h-7 rounded text-xs ${n === page ? 'bg-green-800 text-white' : 'text-gray-600 hover:bg-gray-100'}`}
                       >
                         {n}
                       </button>
@@ -537,7 +537,7 @@ export default function SalesLog() {
                   <button
                     key={item.id}
                     onClick={() => setLogItem(item)}
-                    className={`w-full text-left px-3 py-2.5 hover:bg-gray-50 transition-colors ${logItem?.id === item.id ? 'bg-indigo-50' : ''}`}
+                    className={`w-full text-left px-3 py-2.5 hover:bg-gray-50 transition-colors ${logItem?.id === item.id ? 'bg-green-50' : ''}`}
                   >
                     <div className="font-mono text-sm font-medium text-gray-900">{item.sku}</div>
                     <div className="text-xs text-gray-500 mt-0.5">
@@ -578,7 +578,7 @@ export default function SalesLog() {
               <span className="text-gray-500">{fmt(logItem?.cogs ?? 0)} cost</span>
               <button
                 onClick={() => setLogStep(1)}
-                className="ml-auto text-xs text-indigo-600 hover:underline"
+                className="ml-auto text-xs text-green-800 hover:underline"
               >
                 Change
               </button>

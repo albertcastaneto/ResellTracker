@@ -16,6 +16,7 @@ import SkuGenerator        from './pages/SkuGenerator'
 import CategoryPerformance from './pages/CategoryPerformance'
 import SellThrough         from './pages/SellThrough'
 import UserManagement      from './pages/UserManagement'
+import AuditLog            from './pages/AuditLog'
 
 function App() {
   return (
@@ -74,6 +75,11 @@ function App() {
                 <Route path="/users" element={
                   <ProtectedRoute allowedRoles={['Owner']}>
                     <UserManagement />
+                  </ProtectedRoute>
+                } />
+                <Route path="/audit" element={
+                  <ProtectedRoute allowedRoles={['Owner']}>
+                    <AuditLog />
                   </ProtectedRoute>
                 } />
               </Route>

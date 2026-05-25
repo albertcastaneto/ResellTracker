@@ -144,7 +144,7 @@ export default function FeesTable() {
             <input
               type="checkbox" checked={form.isActive}
               onChange={e => setForm(f => ({ ...f, isActive: e.target.checked }))}
-              className="h-4 w-4 rounded border-gray-300 text-indigo-600"
+              className="h-4 w-4 rounded border-gray-300 text-green-800"
             />
             Active
           </label>

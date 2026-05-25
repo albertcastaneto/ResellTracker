@@ -100,7 +100,7 @@ export default function UserManagement() {
 
   const columns: Column<User>[] = [
     { key: 'displayName', header: 'Name', sortable: true, render: r => (
-      <span className={r.id === me?.userId ? 'font-semibold text-indigo-700' : ''}>{r.displayName}</span>
+      <span className={r.id === me?.userId ? 'font-semibold text-green-800' : ''}>{r.displayName}</span>
     )},
     { key: 'email', header: 'Email', sortable: true },
     { key: 'role',  header: 'Role', render: r => (
@@ -110,7 +110,7 @@ export default function UserManagement() {
           <select
             value={r.role}
             onChange={e => handleRoleChange(r.id, e.target.value)}
-            className="text-xs border border-gray-300 rounded px-1.5 py-1 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="text-xs border border-gray-300 rounded px-1.5 py-1 focus:outline-none focus:ring-1 focus:ring-green-700"
           >
             <option value="Owner">Owner</option>
             <option value="Manager">Manager</option>

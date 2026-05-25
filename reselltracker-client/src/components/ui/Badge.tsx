@@ -7,7 +7,7 @@ const classes: Record<Variant, string> = {
   info:    'bg-blue-100 text-blue-700',
   neutral: 'bg-gray-100 text-gray-600',
   purple:  'bg-purple-100 text-purple-700',
-  blue:    'bg-blue-100 text-blue-700',
+  blue:    'bg-green-100 text-green-800',
   green:   'bg-emerald-100 text-emerald-700',
   gray:    'bg-gray-100 text-gray-600',
 }

@@ -125,7 +125,7 @@ export default function Suppliers() {
           <input
             type="checkbox" checked={activeOnly}
             onChange={e => setActiveOnly(e.target.checked)}
-            className="h-4 w-4 rounded border-gray-300 text-indigo-600"
+            className="h-4 w-4 rounded border-gray-300 text-green-800"
           />
           Active only
         </label>
@@ -166,7 +166,7 @@ export default function Suppliers() {
               onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
               rows={3}
               className="block w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900
-                focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                focus:outline-none focus:ring-2 focus:ring-green-700 focus:border-green-700"
               placeholder="Any notes about this supplier..."
             />
           </div>
@@ -174,7 +174,7 @@ export default function Suppliers() {
             <input
               type="checkbox" checked={form.isActive}
               onChange={e => setForm(f => ({ ...f, isActive: e.target.checked }))}
-              className="h-4 w-4 rounded border-gray-300 text-indigo-600"
+              className="h-4 w-4 rounded border-gray-300 text-green-800"
             />
             Active
           </label>

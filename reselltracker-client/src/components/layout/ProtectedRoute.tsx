@@ -13,7 +13,7 @@ export function ProtectedRoute({ allowedRoles, children }: Props) {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="h-8 w-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+        <div className="h-8 w-8 border-4 border-green-800 border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }

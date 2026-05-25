@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import {
   LayoutDashboard, Package, Receipt, Percent, Building2,
-  Hash, BarChart2, TrendingUp, Users, ChevronLeft, ChevronRight,
+  Hash, BarChart2, TrendingUp, Users, Shield, ChevronLeft, ChevronRight,
   type LucideIcon
 } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
@@ -24,6 +24,7 @@ const NAV_ITEMS: NavItem[] = [
   { to: '/categories',   label: 'Category Perf.',    Icon: BarChart2,       roles: ['Owner','Manager','Viewer'] },
   { to: '/sell-through', label: 'Sell Through',      Icon: TrendingUp,      roles: ['Owner','Manager','Viewer'] },
   { to: '/users',        label: 'User Management',   Icon: Users,           roles: ['Owner'] },
+  { to: '/audit',        label: 'Audit Log',          Icon: Shield,          roles: ['Owner'] },
 ]
 
 export function Sidebar() {
@@ -59,8 +60,8 @@ export function Sidebar() {
             className={({ isActive }) =>
               `flex items-center gap-3 px-3 py-2.5 mx-2 my-0.5 rounded-md text-sm transition-colors
                ${isActive
-                 ? 'bg-indigo-600 text-white'
-                 : 'text-gray-400 hover:bg-gray-800 hover:text-white'}`
+                 ? 'bg-green-50 text-green-800 border-l-2 border-green-800'
+                 : 'text-gray-400 hover:bg-green-50 hover:text-green-800'}`
             }
           >
             <Icon className="h-4 w-4 shrink-0" />

@@ -201,23 +201,23 @@ export default function SkuGenerator() {
                   </thead>
                   <tbody className="divide-y divide-gray-100">
                     <tr>
-                      <td className="px-3 py-2 font-mono font-medium text-indigo-600">{result.brandCode}</td>
+                      <td className="px-3 py-2 font-mono font-medium text-green-800">{result.brandCode}</td>
                       <td className="px-3 py-2 text-gray-600">{form.brand}</td>
                     </tr>
                     <tr>
-                      <td className="px-3 py-2 font-mono font-medium text-indigo-600">{result.categoryCode}</td>
+                      <td className="px-3 py-2 font-mono font-medium text-green-800">{result.categoryCode}</td>
                       <td className="px-3 py-2 text-gray-600">{categoryName}</td>
                     </tr>
                     <tr>
-                      <td className="px-3 py-2 font-mono font-medium text-indigo-600">{result.sizeCode}</td>
+                      <td className="px-3 py-2 font-mono font-medium text-green-800">{result.sizeCode}</td>
                       <td className="px-3 py-2 text-gray-600">Size: {form.size}</td>
                     </tr>
                     <tr>
-                      <td className="px-3 py-2 font-mono font-medium text-indigo-600">{result.supplierCode}</td>
+                      <td className="px-3 py-2 font-mono font-medium text-green-800">{result.supplierCode}</td>
                       <td className="px-3 py-2 text-gray-600">{supplierName}</td>
                     </tr>
                     <tr>
-                      <td className="px-3 py-2 font-mono font-medium text-indigo-600">{String(result.sequenceNumber).padStart(4, '0')}</td>
+                      <td className="px-3 py-2 font-mono font-medium text-green-800">{String(result.sequenceNumber).padStart(4, '0')}</td>
                       <td className="px-3 py-2 text-gray-600">Sequence #{result.sequenceNumber}</td>
                     </tr>
                   </tbody>

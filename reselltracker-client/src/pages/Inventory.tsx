@@ -59,8 +59,8 @@ function StatCard({ icon: Icon, label, value }: { icon: React.ElementType, label
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
       <div className="flex items-center gap-3">
-        <div className="h-8 w-8 bg-indigo-50 rounded-md flex items-center justify-center">
-          <Icon className="h-4 w-4 text-indigo-600" />
+        <div className="h-8 w-8 bg-green-50 rounded-md flex items-center justify-center">
+          <Icon className="h-4 w-4 text-green-800" />
         </div>
         <div>
           <p className="text-xs text-gray-500">{label}</p>
@@ -294,26 +294,26 @@ export default function Inventory() {
           value={searchInput}
           onChange={e => setSearchInput(e.target.value)}
           placeholder="Search SKU or brand..."
-          className="border border-gray-300 rounded-md px-3 py-1.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 w-48"
+          className="border border-gray-300 rounded-md px-3 py-1.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-700 w-48"
         />
         <select
           value={filterStatus}
           onChange={e => { setFilterStatus(e.target.value); setPage(1) }}
-          className="border border-gray-300 rounded-md px-3 py-1.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="border border-gray-300 rounded-md px-3 py-1.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-700"
         >
           {statusFilterOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
         <select
           value={filterCategory}
           onChange={e => { setFilterCategory(e.target.value); setPage(1) }}
-          className="border border-gray-300 rounded-md px-3 py-1.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="border border-gray-300 rounded-md px-3 py-1.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-700"
         >
           {catOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
         <select
           value={filterSupplier}
           onChange={e => { setFilterSupplier(e.target.value); setPage(1) }}
-          className="border border-gray-300 rounded-md px-3 py-1.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="border border-gray-300 rounded-md px-3 py-1.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-700"
         >
           {supFilterOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>

@@ -178,6 +178,91 @@ export interface SaleLogPreview {
   daysListedSoFar: number
 }
 
+// ─── Report Types ─────────────────────────────────────────────────────────────
+
+export interface Dashboard {
+  totalActiveListings: number
+  totalInventoryValue: number
+  cashTiedInStock: number
+  monthlyRevenue: number
+  monthlyProfit: number
+  sellThroughRate: number
+  totalItemsSold: number
+  avgNetProfit: number
+}
+
+export interface CategoryPerformance {
+  categoryName: string
+  totalListed: number
+  totalSold: number
+  sellThroughRate: number
+  avgSalePrice: number
+  avgCogs: number
+  avgNetProfit: number
+  totalRevenue: number
+  totalProfit: number
+}
+
+export interface SupplierROI {
+  supplierName: string
+  totalBought: number
+  totalSpent: number
+  totalSold: number
+  totalRevenue: number
+  totalProfit: number
+  roiPercentage: number
+}
+
+export interface SellThrough {
+  categoryName: string
+  totalListed: number
+  totalSold: number
+  sellThroughRate: number
+  avgDaysToSell: number
+  isOverall: boolean
+}
+
+export interface AgingStock {
+  sku: string
+  brand: string
+  categoryName: string
+  supplierName: string | null
+  dateListed: string
+  daysListed: number
+  ageBand: 'Fresh' | 'Aging' | 'Stale' | 'DeadStock'
+}
+
+export interface MonthlyRevenue {
+  year: number
+  month: number
+  monthName: string
+  totalRevenue: number
+  totalProfit: number
+  totalItemsSold: number
+}
+
+// ─── Audit Log ────────────────────────────────────────────────────────────────
+
+export interface AuditLogEntry {
+  id: string
+  userId: string | null
+  userEmail: string
+  action: string
+  entityName: string
+  entityId: string
+  oldValues: string | null
+  newValues: string | null
+  ipAddress: string | null
+  createdAt: string
+}
+
+export interface AuditLogPage {
+  items: AuditLogEntry[]
+  totalCount: number
+  pageNumber: number
+  pageSize: number
+}
+
 // ─── Response DTOs ────────────────────────────────────────────────────────────
 
 export interface MeResponse {
