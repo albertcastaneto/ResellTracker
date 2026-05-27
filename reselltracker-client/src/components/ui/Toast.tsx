@@ -1,4 +1,5 @@
-import { createContext, useCallback, useContext, useState, type ReactNode } from 'react'
+import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react'
+import { setGlobalShow } from '../../utils/globalToast'
 
 type ToastType = 'success' | 'error' | 'warning' | 'info'
 
@@ -48,6 +49,8 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     setToasts(t => [...t, { id, type, message }])
     setTimeout(() => setToasts(t => t.filter(x => x.id !== id)), 4000)
   }, [])
+
+  useEffect(() => { setGlobalShow(show) }, [show])
 
   return (
     <ToastContext.Provider value={{ toasts, show, dismiss }}>

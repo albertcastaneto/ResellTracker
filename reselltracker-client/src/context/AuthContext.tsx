@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
 import authService from '../services/authService'
+import { isTokenExpired } from '../utils/tokenUtils'
 import type { MeResponse } from '../types'
 
 interface AuthContextType {
@@ -21,6 +22,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const token = localStorage.getItem('auth_token')
     if (!token) {
+      setLoading(false)
+      return
+    }
+    if (isTokenExpired(token)) {
+      localStorage.removeItem('auth_token')
       setLoading(false)
       return
     }
